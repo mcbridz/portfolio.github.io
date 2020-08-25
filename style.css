@@ -1,0 +1,13 @@
+body {
+    background-color: lightblue;
+}
+
+.bg-light {
+    background-color: rgba(248, 249, 250, 0.85)!important;
+    font-family: 'Alata', sans-serif;
+}
+
+.modal-dialog {
+    max-width: 90%;
+    height: 70%;
+}
