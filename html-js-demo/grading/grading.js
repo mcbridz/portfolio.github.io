@@ -10,8 +10,8 @@ let num_flds = 0
 btn_scores.onclick = function () {
     num_flds = num_scores.value
     let prefix = '<div class="row" id="row'
-    let midfix = '"><div class=col-4><input type="number" placeholder="score" class="container" id="grade'
-    let postfix = '" \></div></div>'
+    let midfix = '"><input type="number" placeholder="score" class="container col-3" id="grade'
+    let postfix = '" \></div>'
     let arr_fld_html = []
     for (let i = 0; i < num_flds; i++) {
         let tmp_string = `${prefix}${i}${midfix}${i}${postfix}`
