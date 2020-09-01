@@ -9,7 +9,7 @@ let num_flds = 0
 
 btn_scores.onclick = function () {
     num_flds = num_scores.value
-    let prefix = '<div class="row" id="row'
+    let prefix = '<div class="row justify-content-md-center" id="row'
     let midfix = '"><input type="number" placeholder="score" class="container col-3" id="grade'
     let postfix = '" \></div>'
     let arr_fld_html = []
@@ -52,7 +52,7 @@ grade.onclick = function () {
             modifier = "+"
         }
         if (grade != 100) {
-            fld.innerHTML += `<div class= "col-1">${grades[parseInt(tmp_grade / 10)].toString()}${modifier}</div>`
+            fld.innerHTML += `<div class= "col-1">${grades[parseInt(tmp_grade / 10)].toString()}${modifier}</div><div class= "col-3"></div>`
             console.log(fld.innerHTML)
             grd = document.querySelector(`#grade${i}`)
             grd.value = `${tmp_grade}`
