@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!--Vue-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+    <!--Custom CSS-->
+    <link href="../../style.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+
+    <style>
+        #instructions {
+            margin-bottom: 3%;
+            text-align: center;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: center !important;
+        }
+
+        .row {
+            justify-content: center !important;
+        }
+    </style>
+
+    <title>rotN</title>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="../index.html">Home<span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown link
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" href="../unit-converter/unit-converter.html">Unit Converter</a>
+                        <a class="dropdown-item"
+                            href="../random-password-generator/random-password-generator.html">Random Password
+                            Generator</a>
+                        <a class="dropdown-item" href="../number-to-phrase/number-to-phrase.html">Number To Phrase</a>
+                        <a class="dropdown-item" href="../grading/grading.html">Grading</a>
+
+                        <a class="dropdown-item" href="../to-do-list/to-do-list.html">To-Do List</a>
+                        <a class="dropdown-item" href="./rotN.html">rotN Encryption</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" id="instructions">Type text into appropriate form, then click the appropriate button to
+        convert between plain-text and cypher-text based on a long-string rotation of concatinated
+        <b>[A-Z][a-z][0-9][!@#$%^&*()-_=+[{]}|;:'\"\\/,.? ]</b>(angle brackets are included).</div>
+    <div class="container form-group" id="div_rotation">
+        <input v-model="rotation" type="number" id="input_rotation" placeholder="rotation factor" />
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col" id="input_plain_text">
+                <input type="text" v-model="plain_text" placeholder="plain-text here" />
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div id="encrypt">
+                        <button class="btn btn-primary" v-on:click="encrypt_text" id="btn_encrypt">Encrypt</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="decrypt">
+                        <button class="btn btn-primary" v-on:click="decrypt_text" id="btn_decrypt">Decrypt</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="clear">
+                        <button class="btn btn-primary" v-on:click="clear_text" id="btn_clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col" id="input_cypher_text">
+                <input type="text" v-model="cypher_text" placeholder="cypher-text here" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let encoding_wheel = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}|;:'\"\\/,<.>? "
+        let div_rotation = new Vue({
+            el: '#div_rotation',
+            data: {
+                rotation: 0,
+            }
+        })
+        let input_plain_text = new Vue({
+            el: '#input_plain_text',
+            data: {
+                plain_text: '',
+            }
+        })
+        let input_cypher_text = new Vue({
+            el: '#input_cypher_text',
+            data: {
+                cypher_text: '',
+            }
+        })
+        let encrypt = new Vue({
+            el: '#encrypt',
+            data: {},
+            methods: {
+                encrypt_text: function () {
+                    let output_text = ""
+                    let input_text = input_plain_text.plain_text
+                    for (let i = 0; i < input_text.length; ++i) {
+                        let char_tmp = input_text[i]
+                        let shifted_index = encoding_wheel.indexOf(char_tmp)
+                        console.log(char_tmp, ":", shifted_index)
+                        if (shifted_index != -1) {
+                            shifted_index = (shifted_index + div_rotation.rotation) % encoding_wheel.length
+                            console.log(encoding_wheel[shifted_index], ":", shifted_index)
+                            output_text += encoding_wheel[shifted_index]
+                        } else {
+                            output_text += char_tmp
+                        }
+
+                    }
+                    input_cypher_text.cypher_text = output_text
+                }
+            }
+        })
+        let decrypt = new Vue({
+            el: '#decrypt',
+            data: {},
+            methods: {
+                decrypt_text: function () {
+                    let output_text = ""
+                    let input_text = input_cypher_text.cypher_text
+                    for (let i = 0; i < input_text.length; ++i) {
+                        let char_tmp = input_text[i]
+                        let shifted_index = encoding_wheel.indexOf(char_tmp)
+                        if (shifted_index != -1) {
+                            shifted_index = shifted_index - div_rotation.rotation
+                            while (shifted_index <= 0) {
+                                shifted_index += encoding_wheel.length
+                            }
+                            shifted_index %= encoding_wheel.length
+                            output_text += encoding_wheel[shifted_index]
+                        } else {
+                            output_text += char_tmp
+                        }
+                    }
+                    input_plain_text.plain_text = output_text
+                }
+            }
+        })
+        let clear = new Vue({
+            el: '#clear',
+            data: {},
+            methods: {
+                clear_text: function () {
+                    input_plain_text.plain_text = ""
+                    input_cypher_text.cypher_text = ""
+                    div_rotation.rotation = 0
+                }
+            }
+        })
+
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
