@@ -32,6 +32,10 @@
         .row {
             justify-content: center !important;
         }
+
+        #input_rotation {
+            width: 50px;
+        }
     </style>
 
     <title>rotN</title>
@@ -73,119 +77,40 @@
     <div class="container" id="instructions">Type text into appropriate form, then click the appropriate button to
         convert between plain-text and cypher-text based on a long-string rotation of concatinated
         <b>[A-Z][a-z][0-9][!@#$%^&*()-_=+[{]}|;:'\"\\/,.? ]</b>(angle brackets are included).</div>
-    <div class="container form-group" id="div_rotation">
-        <input v-model="rotation" type="number" id="input_rotation" placeholder="rotation factor" />
-    </div>
-    <div class="form-group">
-        <div class="row">
-            <div class="col" id="input_plain_text">
-                <input type="text" v-model="plain_text" placeholder="plain-text here" />
-            </div>
-            <div class="col">
-                <div class="row">
-                    <div id="encrypt">
-                        <button class="btn btn-primary" v-on:click="encrypt_text" id="btn_encrypt">Encrypt</button>
+    <div id="app">
+        <div class="container form-group" id="div_rotation">
+            <input v-model="rotation" type="number" id="input_rotation" />
+        </div>
+        <div class="container form-group">
+            <div class="row">
+                <div class="col">
+                    <input type="text" v-model="plain_text" placeholder="plain-text here" id="input_plain_text" />
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div id="encrypt">
+                            <button class="btn btn-primary" v-on:click="encrypt_text" id="btn_encrypt">Encrypt</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="decrypt">
+                            <button class="btn btn-primary" v-on:click="decrypt_text" id="btn_decrypt">Decrypt</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="clear">
+                            <button class="btn btn-primary" v-on:click="clear_text" id="btn_clear">Clear</button>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div id="decrypt">
-                        <button class="btn btn-primary" v-on:click="decrypt_text" id="btn_decrypt">Decrypt</button>
-                    </div>
+                <div class="col">
+                    <input type="text" v-model="cypher_text" placeholder="cypher-text here" id="input_cypher_text" />
                 </div>
-                <div class="row">
-                    <div id="clear">
-                        <button class="btn btn-primary" v-on:click="clear_text" id="btn_clear">Clear</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col" id="input_cypher_text">
-                <input type="text" v-model="cypher_text" placeholder="cypher-text here" />
             </div>
         </div>
     </div>
 
-    <script>
-        let encoding_wheel = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[{]}|;:'\"\\/,<.>? "
-        let div_rotation = new Vue({
-            el: '#div_rotation',
-            data: {
-                rotation: 0,
-            }
-        })
-        let input_plain_text = new Vue({
-            el: '#input_plain_text',
-            data: {
-                plain_text: '',
-            }
-        })
-        let input_cypher_text = new Vue({
-            el: '#input_cypher_text',
-            data: {
-                cypher_text: '',
-            }
-        })
-        let encrypt = new Vue({
-            el: '#encrypt',
-            data: {},
-            methods: {
-                encrypt_text: function () {
-                    let output_text = ""
-                    let input_text = input_plain_text.plain_text
-                    for (let i = 0; i < input_text.length; ++i) {
-                        let char_tmp = input_text[i]
-                        let shifted_index = encoding_wheel.indexOf(char_tmp)
-                        console.log(char_tmp, ":", shifted_index)
-                        if (shifted_index != -1) {
-                            shifted_index = (shifted_index + div_rotation.rotation) % encoding_wheel.length
-                            console.log(encoding_wheel[shifted_index], ":", shifted_index)
-                            output_text += encoding_wheel[shifted_index]
-                        } else {
-                            output_text += char_tmp
-                        }
-
-                    }
-                    input_cypher_text.cypher_text = output_text
-                }
-            }
-        })
-        let decrypt = new Vue({
-            el: '#decrypt',
-            data: {},
-            methods: {
-                decrypt_text: function () {
-                    let output_text = ""
-                    let input_text = input_cypher_text.cypher_text
-                    for (let i = 0; i < input_text.length; ++i) {
-                        let char_tmp = input_text[i]
-                        let shifted_index = encoding_wheel.indexOf(char_tmp)
-                        if (shifted_index != -1) {
-                            shifted_index = shifted_index - div_rotation.rotation
-                            while (shifted_index <= 0) {
-                                shifted_index += encoding_wheel.length
-                            }
-                            shifted_index %= encoding_wheel.length
-                            output_text += encoding_wheel[shifted_index]
-                        } else {
-                            output_text += char_tmp
-                        }
-                    }
-                    input_plain_text.plain_text = output_text
-                }
-            }
-        })
-        let clear = new Vue({
-            el: '#clear',
-            data: {},
-            methods: {
-                clear_text: function () {
-                    input_plain_text.plain_text = ""
-                    input_cypher_text.cypher_text = ""
-                    div_rotation.rotation = 0
-                }
-            }
-        })
-
-    </script>
+    <script src="./rotN.js"></script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
