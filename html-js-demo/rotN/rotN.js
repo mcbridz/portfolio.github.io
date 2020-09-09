@@ -27,6 +27,7 @@ let app = new Vue({
     created: function () {
         try {
             this.data = JSON.parse(localStorage.getItem("data"))
+            console.log(this.data)
         } catch (e) {
             // this.data = []
             console.log(e)
