@@ -9,12 +9,41 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!--Vue and Axios-->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 
     <title>Axios/Ajax/Vue Demo</title>
 
     <!--Custom CSS-->
     <link href="../../style.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+
+    <style>
+        #instructions {
+            text-align: center;
+        }
+
+        #img_cat {
+            /* height: 300px;
+            width: 100%;
+            object-fit: cover; */
+            max-width: 100%;
+            max-height: 100%;
+            size: cover;
+        }
+
+        #app {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #btn_container {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -50,8 +79,76 @@
             </ul>
         </div>
     </nav>
+    <div id="instructions" class="container">
+        Welcome to randome cats! Click the 'random' button to get a random cat picture, else click type to see available
+        categories of awesome cat pictures!
+    </div>
+    <div id="app" class="container">
+        <div class="container" id="btn_container">
+            <button id="btn_random" type="button" class="btn btn-primary" v-on:click="getRandom">random</button>
+            <button id="btn_dropdown" type="button" class="btn btn-primary" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">type</button>
+        </div>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" v-for="category in arr_categories"
+                v-on:click="getPicture(category.id)">{{category.name}}</a>
+        </div>
+        <img id="img_cat" v-bind:src="url_picture">
+    </div>
 
-
+    <!--Custom JS-->
+    <script>
+        let app = new Vue({
+            el: "#app",
+            data: {
+                //list_categories is an array of objects including the 'id' and 'name' of searchable categories
+                arr_categories: [],
+                url_picture: ""
+            },
+            created: function () {
+                axios({
+                    method: "get",
+                    url: 'https://api.thecatapi.com/v1/categories'
+                }).then((response) => {
+                    console.log(response.data)
+                    for (let i = 0; i < response.data.length; ++i) {
+                        this.arr_categories.push({
+                            name: response.data[i].name,
+                            id: response.data[i].id
+                        })
+                    }
+                })
+                axios({
+                    method: "get",
+                    url: "https://api.thecatapi.com/v1/images/search"
+                }).then((response) => {
+                    console.log(response.data[0].url)
+                    this.url_picture = response.data[0].url
+                })
+            },
+            methods: {
+                getPicture: function (id) {
+                    axios({
+                        method: "get",
+                        url: "https://api.thecatapi.com/v1/images/search?category_ids=" + id
+                    }).then((response) => {
+                        console.log(response.data[0].url)
+                        console.log(this)
+                        this.url_picture = response.data[0].url
+                    })
+                },
+                getRandom: function () {
+                    axios({
+                        method: "get",
+                        url: "https://api.thecatapi.com/v1/images/search"
+                    }).then((response) => {
+                        console.log(response.data)
+                        this.url_picture = response.data[0].url
+                    })
+                }
+            }
+        })
+    </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
