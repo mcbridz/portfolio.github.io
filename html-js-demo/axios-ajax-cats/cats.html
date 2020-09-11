@@ -10,54 +10,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
+    <title>Axios/Ajax/Vue Demo</title>
+
     <!--Custom CSS-->
     <link href="../../style.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.js"
-        integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
-    <style>
-        .container {
-            margin: 3%;
-        }
-
-        #div_instructions {
-            text-align: center;
-        }
-
-        #select_priority {
-            margin-top: 0;
-        }
-
-        label {
-            margin-bottom: 0;
-        }
-
-        #row_one {
-            align-items: flex-end;
-        }
-
-        #todolist {
-            background-color: rgba(248, 249, 250, 0.85) !important;
-        }
-
-        #select_low {
-            color: green;
-        }
-
-        #select_high {
-            color: red;
-        }
-
-        .row-entry {
-            border: 3px solid black;
-            border-radius: 3px;
-            justify-content: space-between;
-            padding: 5px;
-            text-shadow: 1px 1px black;
-        }
-    </style>
-
-    <title>To-Do List</title>
 </head>
 
 <body>
@@ -84,46 +41,16 @@
                             Generator</a>
                         <a class="dropdown-item" href="../number-to-phrase/number-to-phrase.html">Number To Phrase</a>
                         <a class="dropdown-item" href="../grading/grading.html">Grading</a>
-                        <a class="dropdown-item" href="./to-do-list.html">To-Do List</a>
+
+                        <a class="dropdown-item" href="../to-do-list/to-do-list.html">To-Do List</a>
                         <a class="dropdown-item" href="../rotN/rotN.html">rotN Encryption</a>
-                        <a class="dropdown-item" href="../axios-ajax-cats/cats.html">Axios/Ajax/Vue Demo</a>
+                        <a class="dropdown-item" href="./cats.html">Axios/Ajax/Vue Demo</a>
                     </div>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <div class="container" id="div_instructions">Enter your "To-Do" items in the below field, click on individual items
-        in the list that populates below the enter field to strike completed items.</div>
-    <div class="container" id="below-navbar">
-        <div class="row" id="row_one">
-            <div class="col-9" id="col_input">
-                <input type="text" class="form-control" id="input_todo" placeholder="Enter To-Do Item Here" />
-            </div>
-            <div class="col-2">
-                <label>Priority</label>
-                <select class="form-control" id="select_priority">
-                    <option value="black" id="select_normal">Normal</option>
-                    <option value="rgb(10,255,0)" id="select_low">Low</option>
-                    <option value="red" id="select_high">High</option>
-                </select>
-            </div>
-            <div class="col-1">
-                <button class="btn btn-light" id="scribe">Scribe!</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container" id="todolist">
-
-    </div>
-
-
-
-
-    <!--Custom JavaScript-->
-    <!-- <script src="./to-do-list.js"></script> -->
-    <script src="./to-do-list2.js"></script>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -54,6 +54,25 @@
         button {
             margin-bottom: 4px;
         }
+
+        @media only screen and (max-width: 992px) {
+            .input-group-text {
+                display: none;
+            }
+
+            .input-group-prepend .form-control {
+                width: 100%;
+            }
+
+            #input_fields {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* #app {
+                padding: 12px;
+            } */
+        }
     </style>
 
     <title>rotN</title>
@@ -86,6 +105,7 @@
 
                         <a class="dropdown-item" href="../to-do-list/to-do-list.html">To-Do List</a>
                         <a class="dropdown-item" href="./rotN.html">rotN Encryption</a>
+                        <a class="dropdown-item" href="../axios-ajax-cats/cats.html">Axios/Ajax/Vue Demo</a>
                     </div>
                 </li>
             </ul>
@@ -100,13 +120,14 @@
             <input v-on:input="encrypt_text" v-model="rotation" type="number" id="input_rotation" />
         </div>
         <div class="container form-group">
-            <div class="row">
-                <div class="col-5 input-group-prepend">
+            <div class="row" id="input_fields">
+                <div class="col col-5-sm input-group-prepend">
+                    <!--col-xs-12-->
                     <span class="input-group-text">Plain-Text</span>
                     <textarea rows="4" cols="50" class="form-control" label="input plain-text here" v-model="plain_text"
                         placeholder="plain-text here" id="input_plain_text" v-on:input="encrypt_text"></textarea>
                 </div>
-                <div class="col-2">
+                <div class="col-2 buttons">
                     <div class="row">
                         <div id="encrypt">
                             <button class="btn btn-primary" v-on:click="save_text" id="btn_save">Save</button>
@@ -118,7 +139,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-5 input-group-prepend">
+                <div class="col col-5-sm input-group-prepend">
                     <span class="input-group-text">Cypher-text</span>
                     <textarea rows="4" cols="50" class="form-control" label="input cypher-text here"
                         v-model="cypher_text" v-on:input="decrypt_text" placeholder="cypher-text here"
