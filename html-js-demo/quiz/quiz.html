@@ -47,6 +47,19 @@
             display: flex;
             flex-direction: column;
         }
+
+        #score {
+            text-align: center;
+            width: 10%;
+        }
+
+        .red {
+            background-color: red !important;
+        }
+
+        .green {
+            background-color: green !important;
+        }
     </style>
 </head>
 
@@ -144,25 +157,26 @@
                 <div>
                     <ul class="nav flex-column">
                         <li class="nav-item side-nav" v-for="(question, index) in questions"
-                            v-on:click="changeQuestion(index)">
+                            v-on:click="changeQuestion(index)" v-bind:id="'side_nav' + index">
                             <div>Question {{index+1}}</div>
                         </li>
                     </ul>
                 </div>
                 <div class="container" id="q_and_a">
                     <div class="container" id="question">
-                        <span>{{display.question}}</span>
+                        <span>{{questions[current_question_index].question}}</span>
                     </div>
                     <div class="container" id="answer_display">
                         <div class="radio_group"
                             v-for="(question, index) in questions[current_question_index].arr_answers">
-                            <input type="radio" v-bind:id="'answer'+index" v-bind:value="question"
-                                v-model="selected_answer">
+                            <input type="radio" :disabled="questions[current_question_index].answered"
+                                v-bind:id="'answer'+index" v-bind:value="question" v-model="selected_answer">
                             <label v-bind:for="'answer1'+index">{{question}}</label>
                         </div>
                         <button class="btn btn-primary" id="button_submit" v-on:click="checkAnswer()">Submit</button>
                     </div>
                 </div>
+                <div class="container" id="score">Score: {{score}}</div>
             </div>
         </div>
     </div>
@@ -204,15 +218,8 @@
                 difficulty: "any",
                 questions: [],
                 current_question_index: 0,
-                display: {
-                    question: "",
-                    answer1: "",
-                    answer2: "",
-                    answer3: "",
-                    answer4: "",
-                    correct_answer: "",
-                },
                 selected_answer: "",
+                score: 0,
             },
             created: function () {
 
@@ -226,7 +233,7 @@
                     this.wwtbam_sim = true
                 },
                 changeQuestion: function (index) {
-
+                    this.current_question_index = index
                 },
                 startGame: function () {
                     axios({
@@ -252,6 +259,7 @@
                                     arr_answers: [],
                                     answered: false,
                                     selected_answer: "",
+                                    answered: false,
                                 }
                                 let incorrect_answers = results[i].incorrect_answers
                                 for (let r = 0; r < incorrect_answers.length; ++r) {
@@ -263,28 +271,37 @@
                                 console.log(tmp_question)
                                 this.questions.push(tmp_question)
                             }
-                            let tmp_question = this.questions[0]
-                            this.display.answer1 = tmp_question.arr_answers[0]
-                            this.display.answer2 = tmp_question.arr_answers[1]
-                            this.display.answer3 = tmp_question.arr_answers[2]
-                            this.display.answer4 = tmp_question.arr_answers[3]
-                            this.display.question = tmp_question.question
-                            this.display.correct_answer = tmp_question.answer
                             this.game_started = true
                         }
                     })
                 },
                 checkAnswer: function () {
                     this.questions[this.current_question_index].selected_answer = this.selected_answer
-                    if (this.selected_answer === this.display.correct_answer) {
+                    this.questions[this.current_question_index].answered = true
+                    if (this.selected_answer === this.questions[this.current_question_index].answer) {
                         //modal with celebration picture
                         //make side-nav button green
+                        this.score += 100
+                        $(`#side_nav${this.current_question_index}`).addClass("green")
                         alert("Correct!")
                     } else {
                         //modal with disappointed picture
                         //make side-nave button red
+                        $(`#side_nav${this.current_question_index}`).addClass("red")
                         alert("Incorrect!")
                     }
+                    if (this.current_question_index != this.num_questions - 1) {
+                        this.current_question_index += 1
+                    }
+                    this.gameOver()
+                },
+                gameOver: function () {
+                    for (let i = 0; i < this.questions.length; ++i) {
+                        if (!this.questions[i].answered) {
+                            return
+                        }
+                    }
+                    alert("You win! Your total score is: " + this.score)
                 }
             }
         })
