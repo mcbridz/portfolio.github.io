@@ -154,11 +154,21 @@
                         <span>{{display.question}}</span>
                     </div>
                     <div class="container" id="answer_display">
-                        <div class="radio_group"
-                            v-for="(question, index) in questions[current_question_index].arr_answers">
-                            <input type="radio" v-bind:id="'answer'+index" v-bind:value="question"
-                                v-model="selected_answer">
-                            <label v-bind:for="'answer1'+index">{{question}}</label>
+                        <div class="radio_group">
+                            <input type="radio" id="answer1" v-bind:value=display.answer1 v-model="selected_answer">
+                            <label for="answer1">{{display.answer1}}</label>
+                        </div>
+                        <div class="radio_group">
+                            <input type="radio" id="answer2" v-bind:value=display.answer2 v-model="selected_answer">
+                            <label for="answer1">{{display.answer2}}</label>
+                        </div>
+                        <div class="radio_group">
+                            <input type="radio" id="answer3" v-bind:value=display.answer3 v-model="selected_answer">
+                            <label for="answer1">{{display.answer3}}</label>
+                        </div>
+                        <div class="radio_group">
+                            <input type="radio" id="answer4" v-bind:value=display.answer4 v-model="selected_answer">
+                            <label for="answer1">{{display.answer4}}</label>
                         </div>
                         <button class="btn btn-primary" id="button_submit" v-on:click="checkAnswer()">Submit</button>
                     </div>
@@ -203,8 +213,8 @@
                 category: "any",
                 difficulty: "any",
                 questions: [],
-                current_question_index: 0,
                 display: {
+                    current_question_index: 0,
                     question: "",
                     answer1: "",
                     answer2: "",
@@ -275,7 +285,7 @@
                     })
                 },
                 checkAnswer: function () {
-                    this.questions[this.current_question_index].selected_answer = this.selected_answer
+                    this.questions[this.display.current_question_index].selected_answer = this.selected_answer
                     if (this.selected_answer === this.display.correct_answer) {
                         //modal with celebration picture
                         //make side-nav button green
