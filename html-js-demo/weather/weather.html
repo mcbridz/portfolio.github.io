@@ -22,10 +22,6 @@
     <!-- api key -->
     <script src="secrets.js"></script>
 
-    <!-- google maps -->
-    <!-- <script defer
-        src=https://maps.googleapis.com/maps/api/js?key=AIzaSyAcnor2H2twSxh7QflTWNfmTBiUWBG0Ozs&callback=initMap>
-        </script> -->
     <!-- owfont icon -->
     <link href="css/owfont-regular.css" rel="stylesheet" type="text/css">
 
@@ -88,6 +84,18 @@
         #div_description {
             padding-left: 7px;
         }
+
+        #div_daily_data>.hourly_data {
+            margin-bottom: 2%;
+        }
+
+        #active_row {
+            margin-top: 2%;
+        }
+
+        #btn_temp {
+            margin-right: 3px;
+        }
     </style>
 
     <title>Weather</title>
@@ -137,7 +145,7 @@
                     <h5>{{current_time}}</h5>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="active_row">
                 <div class="col">
                     <div class="row">
                         <i v-bind:class="current_weather"></i>
@@ -159,9 +167,11 @@
                         <h4><b>Sunset: </b> {{sunset}}</h4>
                     </div>
                     <div class="row">
-                        <button class="btn btn-secondary" v-on:click="alternate_data">Temperature</button>
+                        <button class="btn btn-secondary" :disabled="temp_not_wind" id="btn_temp"
+                            v-on:click="alternate_data">Temperature</button>
                         <!-- <button class="btn btn-secondary">Precipitation</button> -->
-                        <button class="btn btn-secondary" v-on:click="alternate_data">Wind</button>
+                        <button class="btn btn-secondary" :disabled="!temp_not_wind" id="btn_wind"
+                            v-on:click="alternate_data">Wind</button>
                     </div>
                 </div>
             </div>
@@ -267,7 +277,11 @@
                         this.sunset = `${temp_date.getHours() % 12}:${temp_date.getMinutes()}pm`
                         this.temp = Math.round(current.temp)
                         this.wet_bulb = Math.round(current.feels_like)
-                        this.current_weather = `owf owf-${current.weather[0].id} owf-5x`
+                        this.current_weather = `owf owf-${current.weather[0].id}`
+                        if (temp_date.getHours() < 6 || temp_date.getHours() > 20) {
+                            this.current_weather += '-n'
+                        }
+                        this.current_weather += " owf-5x"
                         this.humidity = current.humidity
                         this.description = current.weather[0].description
                         //deal with hourly data
@@ -285,7 +299,6 @@
                                 minutes: 0,
                             }
                             tmp_hour = hourly[i]
-                            tmp_data.id = `owf owf-${tmp_hour.weather[0].id} owf-2x`
                             tmp_data.temp = Math.round(tmp_hour.temp)
                             tmp_data.wind.strength = tmp_hour.wind_speed
                             tmp_data.wind.direction = degToCompass(tmp_hour.wind_deg)
@@ -294,6 +307,11 @@
                             tmp_date = new Date(tmp_hour.dt * 1000)
                             tmp_data.hours = tmp_date.getHours() % 12
                             tmp_data.minutes = tmp_date.getMinutes()
+                            tmp_data.id = `owf owf-${tmp_hour.weather[0].id}`
+                            if (tmp_date.getHours() < 6 || tmp_date.getHours() > 20) {
+                                tmp_data.id += '-n'
+                            }
+                            tmp_data.id += " owf-2x"
                             this.hourly_data.push(tmp_data)
                         }
                         console.log(this.hourly_data)
@@ -307,7 +325,11 @@
                             }
                             let tmp_date = new Date(daily[i].dt * 1000)
                             tmp_day.day = day_to_phrase[tmp_date.getDay()]
-                            tmp_day.id = `owf owf-${daily[i].weather[0].id} owf-2x`
+                            tmp_day.id = `owf owf-${daily[i].weather[0].id}`
+                            if (tmp_date.getHours() < 6 || tmp_date.getHours() > 20) {
+                                tmp_day.id += '-n'
+                            }
+                            tmp_day.id += " owf-2x"
                             tmp_day.min_temp = Math.round(daily[i].temp.min)
                             tmp_day.max_temp = Math.round(daily[i].temp.max)
                             this.daily_data.push(tmp_day)
