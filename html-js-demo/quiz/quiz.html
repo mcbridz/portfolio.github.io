@@ -26,6 +26,7 @@
             border-radius: 3px;
             width: max-content;
             background-color: rgba(238, 239, 240, 0.85);
+            padding: 3px;
         }
 
         .side-nav:hover {
@@ -145,7 +146,7 @@
                     <div class="form-group">
                         <label for="categories">Categories</label>
                         <select class="form-control" id="categories" v-model="category">
-                            <option value="any" selected>Any Category</option>
+                            <option value="">Any Category</option>
                             <option value="9">General Knowledge</option>
                             <option value="10">Entertainment: Books</option>
                             <option value="11">Entertainment: Film</option>
@@ -175,7 +176,7 @@
                     <div class="form-group">
                         <label for="trivia_difficulty">Select Difficulty: </label>
                         <select id="trivia_difficulty" class="form-control" v-model="difficulty">
-                            <option value="any" selected>Any Difficulty</option>
+                            <option value="">Any Difficulty</option>
                             <option value="easy">Easy</option>
                             <option value="medium">Medium</option>
                             <option value="hard">Hard</option>
@@ -258,8 +259,8 @@
                 wwtbam_sim: false,
                 review: false,
                 num_questions: "",
-                category: "any",
-                difficulty: "any",
+                category: "",
+                difficulty: "",
                 questions: [],
                 current_question_index: 0,
                 selected_answer: "",
@@ -281,7 +282,7 @@
                 },
                 startGame: function () {
                     if (this.num_questions == "") {
-                        this.num_questions = 1
+                        this.num_questions = 10
                     }
                     axios({
                         method: "get",
@@ -294,6 +295,7 @@
                         },
                     }).then((response) => {
                         console.log(response.data)
+                        console.log(response)
                         if (response.data.response_code == 0) {
                             let results = response.data.results
                             for (let i = 0; i < results.length; ++i) {
