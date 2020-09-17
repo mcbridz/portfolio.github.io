@@ -41,6 +41,7 @@
         #q_and_a {
             display: flex;
             flex-direction: column;
+            padding-right: 0;
         }
 
         #answer_display {
@@ -59,6 +60,39 @@
 
         .green {
             background-color: green !important;
+        }
+
+        #app {
+            background-color: rgba(228, 229, 230, 0.85);
+            padding: 2%;
+            height: 100%;
+        }
+
+        .tab {
+            padding-left: 20px;
+        }
+
+        #score {
+            padding-right: 60px;
+        }
+
+        .radio_group {
+            display: flex;
+            align-items: center;
+            border: 1px solid grey;
+            border-radius: 3px;
+        }
+
+        .answer_radio {
+            margin: 0 5px;
+        }
+
+        .answer_text {
+            margin: 0;
+        }
+
+        #screen {
+            height: 90vh;
         }
     </style>
 </head>
@@ -98,20 +132,20 @@
             </ul>
         </div>
     </nav>
-    <div class="container">
+    <div class="container" id="screen">
         <div id="app">
             <div v-if="!game_started">
                 <button class="btn btn-primary" v-on:click="changeGameType">Change Game Type</button>
                 <div v-if="!wwtbam_sim">
                     <div class="form-group">
-                        <label for="num_questions">Manual</label>
+                        <label for="num_questions"><b>Mode: </b>Manual</label>
                         <input type="number" class="form-control" id="num_questions" placeholder="Questions"
                             v-model="num_questions" />
                     </div>
                     <div class="form-group">
                         <label for="categories">Categories</label>
                         <select class="form-control" id="categories" v-model="category">
-                            <option value="any">Any Category</option>
+                            <option value="any" selected>Any Category</option>
                             <option value="9">General Knowledge</option>
                             <option value="10">Entertainment: Books</option>
                             <option value="11">Entertainment: Film</option>
@@ -141,7 +175,7 @@
                     <div class="form-group">
                         <label for="trivia_difficulty">Select Difficulty: </label>
                         <select id="trivia_difficulty" class="form-control" v-model="difficulty">
-                            <option value="any">Any Difficulty</option>
+                            <option value="any" selected>Any Difficulty</option>
                             <option value="easy">Easy</option>
                             <option value="medium">Medium</option>
                             <option value="hard">Hard</option>
@@ -153,7 +187,7 @@
                 </div>
                 <button class="btn btn-primary" v-on:click="startGame">Start Game</button>
             </div>
-            <div id="display" v-if="game_started">
+            <div id="display" v-if="game_started && !review">
                 <div>
                     <ul class="nav flex-column">
                         <li class="nav-item side-nav" v-for="(question, index) in questions"
@@ -164,19 +198,28 @@
                 </div>
                 <div class="container" id="q_and_a">
                     <div class="container" id="question">
-                        <span>{{questions[current_question_index].question}}</span>
+                        <span v-html="questions[current_question_index].question"></span>
                     </div>
                     <div class="container" id="answer_display">
                         <div class="radio_group"
                             v-for="(question, index) in questions[current_question_index].arr_answers">
-                            <input type="radio" :disabled="questions[current_question_index].answered"
-                                v-bind:id="'answer'+index" v-bind:value="question" v-model="selected_answer">
-                            <label v-bind:for="'answer1'+index">{{question}}</label>
+                            <input class="answer_radio" type="radio"
+                                :disabled="questions[current_question_index].answered" v-bind:id="'answer'+index"
+                                v-bind:value="question" v-model="selected_answer">
+                            <label class="answer_text" v-bind:for="'answer1'+index" v-html="question"></label>
                         </div>
                         <button class="btn btn-primary" id="button_submit" v-on:click="checkAnswer()">Submit</button>
                     </div>
                 </div>
-                <div class="container" id="score">Score: {{score}}</div>
+                <span class="container" id="score">Score: {{score}}</span>
+            </div>
+            <div id="review_screen" v-if="review">
+                <div class="container review_block" v-for="(question, index) in questions">
+                    <div><b>Question {{index+1}}: </b><span v-html="question.question"></span></div>
+                    <div><b class="tab">Your Anwswer: </b><span v-html="question.selected_answer"></span></div>
+                    <div><b class="tab">Correct Answer: </b><span v-html="question.answer"></span></div>
+                </div>
+                <button class="btn btn-primary" v-on:click="reset">Restart</button>
             </div>
         </div>
     </div>
@@ -213,6 +256,7 @@
             data: {
                 game_started: false,
                 wwtbam_sim: false,
+                review: false,
                 num_questions: "",
                 category: "any",
                 difficulty: "any",
@@ -236,6 +280,9 @@
                     this.current_question_index = index
                 },
                 startGame: function () {
+                    if (this.num_questions == "") {
+                        this.num_questions = 1
+                    }
                     axios({
                         method: "get",
                         url: 'https://opentdb.com/api.php',
@@ -302,6 +349,19 @@
                         }
                     }
                     alert("You win! Your total score is: " + this.score)
+                    this.review = true
+                },
+                reset: function () {
+                    this.questions = []
+                    this.current_question_index = 0
+                    this.selected_answer = ""
+                    this.score = 0
+                    this.category = "any"
+                    this.difficulty = "any"
+                    this.num_questions = ""
+                    this.game_started = false
+                    this.wwtbam_sim = false
+                    this.review = false
                 }
             }
         })
